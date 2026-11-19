@@ -65,7 +65,7 @@
     .name-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
     .name-row .who { font-size: 19px; font-weight: 700; }
     .stage { position: relative; background: #111; border-radius: 12px; overflow: hidden; margin-bottom: 14px;
-             aspect-ratio: 3 / 4; max-height: 62vh; width: 100%; }
+             aspect-ratio: 3 / 4; max-height: 42vh; width: 100%; }
     .stage video { width: 100%; height: 100%; object-fit: cover; display: block; background: #111; }
     #live { transform: scaleX(-1); }            /* mirror the live view like a selfie camera */
     #review { object-fit: contain; display: none; }
@@ -90,7 +90,7 @@
     #note { width: 100%; padding: 11px 12px; font-size: 16px; border: 1.5px solid #ccc; border-radius: 9px; }
     #note:focus { border-color: var(--maroon); outline: none; }
     .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
-    .tips { border-top: 1px solid #eee; margin-top: 18px; padding-top: 14px; }
+    .tips { background: #f7f7f7; border-radius: 9px; padding: 12px 14px; margin-bottom: 14px; }
     .tips li { margin: 3px 0 0 18px; }
 
     .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%;
@@ -112,7 +112,7 @@
   <!-- 1. Find your name -->
   <section class="step" id="step-search">
     <h1>Record your graduation name</h1>
-    <p class="subtitle">Find your name, then record a short video of yourself saying it. The people reading names at graduation will use your video to learn exactly how to say it.</p>
+    <p class="subtitle">Find your name, then record a short video of yourself saying it. Mr. Fahy and Mr. McNeil will use it to learn exactly how to say your name at graduation.</p>
     <label class="field-label" for="name-search">Type your name</label>
     <div class="search-wrap">
       <input id="name-search" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -146,6 +146,17 @@
     </div>
     <div class="notice error" id="cam-error" style="display:none"></div>
 
+    <div class="small tips" id="tips">
+      <strong>Before you record</strong>
+      <p style="margin:4px 0 2px">This video is not made public. Mr. Fahy and Mr. McNeil will use it to learn exactly how to say your name at graduation.</p>
+      <ul>
+        <li>Find a quiet spot facing a window or a light.</li>
+        <li>Hold the phone upright (not sideways) at eye level, like you're on a video call.</li>
+        <li>Say only your full name, once, clearly, exactly as it's shown on the screen.</li>
+        <li>Don't say "my name is," and don't repeat your name.</li>
+      </ul>
+    </div>
+
     <div class="stage" id="stage">
       <video id="live" playsinline muted autoplay></video>
       <video id="review" playsinline controls></video>
@@ -173,16 +184,6 @@
         <button class="btn btn-gray" id="btn-redo">↺ Record again</button>
         <button class="btn btn-green" id="btn-submit">Send video</button>
       </div>
-    </div>
-
-    <div class="small tips">
-      <strong>Tips</strong>
-      <ul>
-        <li>Find a quiet spot with light on your face.</li>
-        <li>Hold the phone upright (not sideways) at eye level, about an arm's length away.</li>
-        <li>Say your full name once, slowly and clearly, the way you want it read.</li>
-        <li>Recording stops by itself after <span class="max-sec">15</span> seconds.</li>
-      </ul>
     </div>
   </section>
 
@@ -299,13 +300,7 @@
       const main = document.createElement('div');
       main.className = 'main';
       main.textContent = s.g;
-      b.appendChild(main);
-      if (s.p && fold(s.g).indexOf(fold(s.p)) < 0) {
-        const sub = document.createElement('div');
-        sub.className = 'sub';
-        sub.textContent = 'Goes by ' + s.p;
-        b.appendChild(sub);
-      }
+      b.appendChild(main);   // nicknames are searchable (s.key) but not shown
       b.addEventListener('click', () => pick(s));
       box.appendChild(b);
     });
@@ -394,6 +389,9 @@
   $('btn-record').addEventListener('click', async () => {
     if (!stream) return;
     $('btn-record').disabled = true;
+    // They've read the instructions: fold them away so the camera and Stop button fit on screen.
+    $('tips').style.display = 'none';
+    window.scrollTo(0, 0);
     for (let i = CONFIG.COUNTDOWN; i > 0; i--) {
       $('countdown').textContent = i;
       await new Promise(r => setTimeout(r, 1000));
@@ -471,6 +469,7 @@
     $('prompt-text').textContent = '';
     $('controls-review').style.display = 'none';
     $('controls-record').style.display = 'block';
+    $('tips').style.display = 'block';
     $('btn-record').style.display = 'flex';
     $('btn-stop').style.display = 'none';
     startCamera();
