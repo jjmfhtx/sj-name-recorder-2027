@@ -87,6 +87,7 @@
     .notice ol { margin: 6px 0 0 20px; }
 
     .note-wrap { margin: 4px 0 16px; }
+    .note-label { display: block; font-size: 15px; font-weight: 700; }
     #note { width: 100%; padding: 11px 12px; font-size: 16px; border: 1.5px solid #ccc; border-radius: 9px; }
     #note:focus { border-color: var(--maroon); outline: none; }
     .small { font-size: 13px; color: var(--muted); line-height: 1.5; }
@@ -176,8 +177,9 @@
     <div id="controls-review" style="display:none">
       <p class="small" style="margin-bottom:10px">Play it back. Can you clearly hear your name?</p>
       <div class="note-wrap">
-        <label class="field-label" for="note">Pronunciation tip for the reader (optional)</label>
-        <input id="note" type="text" maxlength="200" placeholder="e.g. HOH-zay ah-SEH-veh-doh" autocomplete="off">
+        <label class="note-label" for="note">Pronunciation tips for your reader:</label>
+        <p class="small" id="note-help" style="margin:2px 0 8px">This is optional in case you think it's helpful to write something out in addition to your video.</p>
+        <input id="note" type="text" maxlength="200" autocomplete="off" aria-describedby="note-help">
       </div>
       <div class="notice error" id="upload-error" style="display:none"></div>
       <div class="row">
